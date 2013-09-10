@@ -1,0 +1,1 @@
+﻿Import-Module .\bin\Debug\AzurePowerShellTools.dll
