@@ -40,8 +40,9 @@ You can use the [Windows Azure Management Cmdlets][1] to create, remove, and lis
     Remove-AzureStorageQueue my-queue
     Get-AzureStorageQueue
     
-Use these **AzurePowerShellTools** to Push, Peek, Count, and Pop messages to and from the queue:
+Use these **AzurePowerShellTools** to Clear, Push, Peek, Count, and Pop messages to and from the queue:
 
+    Clear-QueueMessages my-queue
     New-QueueMessage my-queue 'my message'
     Get-QueueMessage my-queue
     Get-QueueMessageCount my-queue
