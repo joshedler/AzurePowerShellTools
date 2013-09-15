@@ -206,7 +206,6 @@ Write-Host ($fmt -f "$($MyInvocation.MyCommand)") -BackgroundColor DarkMagenta -
     $Assert::That($actual, $Is::EqualTo($expected))
 }) |
 
-
 Invoke-Test | 
     
 Format-TestResult -All

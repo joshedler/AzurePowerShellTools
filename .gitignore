@@ -109,3 +109,4 @@ UpgradeLog*.XML
 
 # Files specific to this project
 .config*
+.conn

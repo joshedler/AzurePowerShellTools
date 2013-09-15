@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -52,12 +53,18 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="GetAzureStorageConfiguration.cs" />
+    <Compile Include="AzureQueues\GetQueueMessageCount.cs" />
+    <Compile Include="AzureQueues\NewQueueMessage.cs" />
     <Compile Include="InvalidAzureConnectionStringPatternException.cs" />
+    <Compile Include="AzureQueues\GetQueueMessage.cs" />
+    <Compile Include="AzureQueues\ClearQueueMessages.cs" />
+    <Compile Include="AzureQueues\QueueHelper.cs" />
     <Compile Include="SetAzureStorageConfiguration.cs" />
     <Compile Include="ICmdlet.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MissingEnvironmentVariableException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAzureStorageConfiguration.cs" />
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>

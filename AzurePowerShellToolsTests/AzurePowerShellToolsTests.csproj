@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AzurePowerShellToolsTests.psm1" />
+    <None Include="AzureQueueTests.ps1" />
+    <None Include="TestAzureStorageConfigurationTests.ps1" />
     <None Include="Run-AzurePowerShellToolsTests.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

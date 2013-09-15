@@ -12,6 +12,32 @@
     return $result
 }
 
+function Write-HostHeading {
+    param (
+        [Parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true)]
+        [String] $Message,
+        [String] $BackgroundColor,
+        [String] $ForegroundColor,
+        [Switch] $BreakBefore,
+        [Switch] $BreakAfter
+    )
+
+    if ([String]::IsNullOrEmpty($BackgroundColor)) {
+        $BackgroundColor = 'White'
+    }
+
+    if ([String]::IsNullOrEmpty($ForegroundColor)) {
+        $ForegroundColor = 'Black'
+    }
+
+    if ($BreakBefore) { Write-Host '' }
+
+    $fmt = '{0,-' + (($Host.UI.RawUI.BufferSize | Select -ExpandProperty Width) - 1) + '}'
+    Write-Host ($fmt -f $Message) -BackgroundColor $BackgroundColor -ForegroundColor $ForegroundColor
+
+    if ($BreakAfter) { Write-Host '' }
+}
+
 function Get-RandomizedAzureStorageConfigurationString {
     # valid strings are in the form:
     # @"^DefaultEndpointsProtocol=(http|https);AccountName=(.+);AccountKey=(.+)$"

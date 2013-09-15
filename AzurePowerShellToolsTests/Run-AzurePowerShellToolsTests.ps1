@@ -1,5 +1,11 @@
 ﻿[CmdletBinding()]
-Param()
+Param(
+    [Parameter(Mandatory=$false, Position=0, ValueFromPipeline=$true)]
+    [String] $azureConnectionString,
+
+    [Parameter(Mandatory=$false)]
+    [Switch] $release
+)
 
 if ($PSVersionTable -eq $null -or $PSVersionTable['PSVersion'].Major -ne 3) {
     throw 'Powershell 3.0 is expected.'
@@ -23,14 +29,7 @@ if ($gm -eq $null) {
     $pstest_file = Get-ChildItem "$pstest_path" -Filter pstest.dll -Recurse | Sort -Descending -Property LastWriteTime | Select -First 1 -ExpandProperty FullName
 
     if ($pstest_file -eq $null) {
-        $message = "File 'pstest.dll' could not be found."
-        $exception = New-Object System.IO.FileNotFoundException $message
-        $errorID = 'FileNotFound'
-        $errorCategory = [Management.Automation.ErrorCategory]::ObjectNotFound
-        $target = $pstest_file
-        $errorRecord = New-Object Management.Automation.ErrorRecord $exception, $errorID,
-            $errorCategory, $target
-        $PSCmdlet.ThrowTerminatingError($errorRecord)
+        throw "File 'pstest.dll' could not be found."
     }
 
     Import-Module "$pstest_file" -ErrorAction Stop
@@ -88,18 +87,41 @@ until ($valid -contains $response)
 if ($yes -contains $response) {
     Import-Module .\AzurePowerShellToolsTests.psm1 -ErrorAction Stop
 
+    if ($release) {
+        Import-Module .\bin\Release\AzurePowerShellTools.dll -ErrorAction Stop
+    } else {
+        Import-Module .\bin\Debug\AzurePowerShellTools.dll -ErrorAction Stop
+    }
+
+    # if $azureConnectionString is empty, only run a subset of tests
+    if (![String]::IsNullOrEmpty($azureConnectionString)) {
+        # validate the $azureConnectionString parameter
+        # NOTE: this is a bit weird since we have a unit test for it
+        # later... we want to use it to validate this argument and we
+        # need to ensure it works correctly...
+        $valid = Test-AzureStorageConfiguration -AzureConnectionString "$azureConnectionString"
+
+        if (!$valid) {
+            throw 'Invalid AzureConnectionString argument.'
+        }
+    }
+
     Write-Verbose 'Backing up config file...'
     Backup-AzureStorageConfigurationFiles
 
-    Import-Module .\bin\Debug\AzurePowerShellTools.dll -ErrorAction Stop
-
     .\GetAzureStorageConfigurationTests.ps1
     .\SetAzureStorageConfigurationTests.ps1
+    .\TestAzureStorageConfigurationTests.ps1
+
+    if (![String]::IsNullOrEmpty($azureConnectionString)) {
+        .\AzureQueueTests.ps1
+    } else {
+        Write-HostHeading 'Tests requiring access to Azure have not been run because a connnection string has not been specified.' -BackgroundColor Yellow -ForegroundColor Black -BreakBefore
+    }
 
     Write-Verbose 'Restoring config file...'
     Restore-AzureStorageConfigurationFiles
 
-    $fmt = '{0,-' + (($Host.UI.RawUI.BufferSize | Select -ExpandProperty Width) - 1) + '}'
-    Write-Host ($fmt -f 'Your Azure Storage Configuration settings are:') -BackgroundColor Blue -ForegroundColor White
+    Write-HostHeading 'Your Azure Storage Configuration settings are:' -BackgroundColor Blue -ForegroundColor White -BreakBefore
     Get-AzureStorageConfiguration
 }
