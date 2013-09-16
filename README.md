@@ -48,6 +48,9 @@ Use these **AzurePowerShellTools** to Clear, Push, Peek, Count, and Pop messages
     Get-QueueMessageCount my-queue
     Get-QueueMessage my-queue -Remove
 
+Get it!
+-------
 
+Grab the latest source & build it through Visual Studio, or [grab the latest release](https://github.com/joshedler/AzurePowerShellTools/releases).
 
 [1]: http://msdn.microsoft.com/en-us/library/jj152841.aspx    "Windows Azure Management Cmdlets"
